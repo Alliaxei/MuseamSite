@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Администратор</title>
+    {% load static %}
+    <link href="{% static 'css/admin.css' %}" rel="stylesheet">
+</head>
+<body>
+     <div class="container">
+        <!-- Боковая панель навигации -->
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#exhibits">Управление экспонатами</a></li>
+                <li><a href="#halls">Управление залами</a></li>
+                <li><a href="#reports">Просмотр отчетов</a></li>
+                <li><a href="#employees">Работники</a></li>
+            </ul>
+        </nav>
+        <!-- Основное рабочее окно -->
+        <div class="main-content">
+            <header>
+                <h1 id="welcome-message-admin">Панель администратора</h1>
+                <div class="out">
+                    <form method="POST">
+                    {% csrf_token %}
+                        <button type="submit"></button>
+                        <input type="submit" value="submit">
+                    </form>
+
+                </div>
+
+            </header>
+
+            <div class="content">
+                <!-- Здесь будут отображаться страницы по выбору -->
+                <h2  id="welcome-message">Добро пожаловать, администратор!</h2>
+                <p  id="welcome-text">Выберите нужное действие в боковой панели.</p>
+
+                <!-- Управление экспонатами -->
+                <div id="exhibits" class="content-page" style="display: none;">
+                    <h2>Управление экспонатами</h2>
+
+                    <h3>Добавление экспоната</h3>
+
+
+                    <form method="POST" action="{% url 'add_exhibits' %}" >
+                        {% csrf_token %}
+                        <label for="name">Наименование:</label>
+                        <input type="text" id="name" name="name" required>
+
+                        <label for="author">Автор:</label>
+                        <input type="text" id="author" name="author" required>
+
+                        <label for="origin">Источник происхождения:</label>
+                        <input type="text" id="origin" name="origin" required>
+
+                        <label for="quantity">Количество экземпляров:</label>
+                        <input type="number" id="quantity" name="quantity" required>
+
+                        <label for="category">Категория:</label>
+                        <select id="category" name="category">
+                            <option value="utensils">Бытовая утварь</option>
+                            <option value="clothing">Одежда</option>
+                            <option value="weapons">Оружие</option>
+                            <option value="art">Живопись</option>
+                        </select>
+
+                        <label for="history">История происхождения:</label>
+                        <textarea id="history" name="history" required></textarea>
+
+                        <label for="condition">Состояние:</label>
+                        <select id="condition" name="condition">
+                            <option value="good">Хорошее</option>
+                            <option value="restoration_needed">Требует реставрации</option>
+                        </select>
+
+                        <button type="submit">Добавить экспонат</button>
+                    </form>
+
+                    <h3>Список экспонатов</h3>
+                    <table id="exhibit_table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Наименование</th>
+                                <th>Автор</th>
+                                <th>Источник происхождения</th>
+                                <th>Количество экземпляров</th>
+                                <th>Категория</th>
+                                <th>История происхождения</th>
+                                <th>Состояние</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exhibit in exhibits %}
+                            <tr>
+                                <td>{{ exhibit.id }}</td>
+                                <td>{{ exhibit.name }}</td>
+                                <td>{{ exhibit.author }}</td>
+                                <td>{{ exhibit.origin }}</td>
+                                <td>{{ exhibit.quantity }}</td>
+                                <td>{{ exhibit.get_category_display }}</td>
+                                <td>{{ exhibit.history }}</td>
+                                <td>{{ exhibit.get_condition_display }}</td>
+                                <td>
+                                    <button onclick="editExhibit(1)">Редактировать</button>
+                                    <button onclick="deleteExhibit(1)">Удалить</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="9">Экспонаты не найдены</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+
+                <!-- Employees -->
+                <div id="employees" class="content-page" style="display: none;">
+                    <h2>Управление сотрудниками</h2>
+
+                    <form id="employee-form" action="/add_employee" method="POST">
+                        <h3>Добавить нового сотрудника</h3>
+                        <label for="employee_name">Имя:</label>
+                        <input type="text" id="employee_name" name="name" required>
+
+                        <label for="employee_position">Должность:</label>
+                        <input type="text" id="employee_position" name="position" required>
+
+                        <label for="employee_contact">Контактная информация:</label>
+                        <input type="text" id="employee_contact" name="contact" required>
+
+                        <button type="submit">Добавить сотрудника</button>
+                    </form>
+
+                    <h3>Список сотрудников</h3>
+                    <table id="employee_table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Должность</th>
+                                <th>Контактная информация</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Пример строки сотрудника -->
+                            <tr>
+                                <td>1</td>
+                                <td>Иванов Иван</td>
+                                <td>Куратор</td>
+                                <td>ivanov@example.com</td>
+                                <td>
+                                    <button onclick="editEmployee(1)">Редактировать</button>
+                                    <button onclick="deleteEmployee(1)">Удалить</button>
+                                </td>
+                            </tr>
+                            <!-- Другие строки сотрудников будут динамически добавляться здесь -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+      {% load static %}
+    <script src="{% static 'js/admin.js' %}"></script>
+</body>
+</html>
