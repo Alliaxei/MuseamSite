@@ -1,0 +1,16 @@
+{% for employee in employees %}
+                                <tr>
+                                    <td>{{ employee.name }}</td>
+                                    <td>{{ employee.login }}</td>
+                                    <td>{{ employee.email }}</td>
+                                    <td>
+                                      <div class="button-container">
+                                      <form id="employee-form-delete" action="{% url 'deleteEmployee' employee.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <button class="table-button" type="submit">Удалить</button>
+                                        </form>
+                                        <button class="table-button" onclick="editEmployeeModal({{ employee.id }})">Редактировать</button>
+                                    </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}

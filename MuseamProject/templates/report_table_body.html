@@ -1,0 +1,18 @@
+ {% for report in reports %}
+                                    <tr>
+                                        <td>{{ report.get_report_type_display }}</td>
+                                        <td>{{ report.description }}</td>
+                                        <td>{{ report.generated_at }}</td>
+                                        <td>{{ report.generated_by.name }}</td>
+                                          <td>
+                                            <form id="report-form-delete" action="{% url 'deleteReport' report.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <button class="table-button" type="submit">Удалить</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5">Отчёты не найдены</td>
+                                    </tr>
+                                {% endfor %}

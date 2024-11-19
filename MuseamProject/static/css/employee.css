@@ -1,16 +1,79 @@
-   * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
+.addButton{
+    font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-bottom: 10px;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #fafafa;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-content: center;
     height: 100vh;
+}
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    padding: 20px;
+    width: 400px;
+    margin-top: 100px;
+    border-radius: 8px;
+    animation: slideDown 0.3s ease;
+}
+
+.report-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: flex-start;
+    animation: fadeIn 0.3s ease;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    cursor: pointer;
+     transition: transform 0.2s, color 0.2s;
+}
+.close:hover {
+    transform: scale(1.2);
+    color: red;
+}
+.close:active {
+    transform: scale(0.9);
+}
+
+button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+button:hover {
+    opacity: 0.8;
+}
+
+button:active {
+    transform: scale(0.95);
 }
 
 table {
@@ -23,7 +86,7 @@ table {
 }
 
 th, td {
-    padding: 20px 15px;
+    padding: 12px 15px;
     border: 1px solid #ddd;
     text-align: center;
 }
@@ -46,118 +109,14 @@ tr:hover {
     background-color: #f1f1f1;
 }
 
-td {
-    text-align: center;
-    vertical-align: middle;
-}
-.button-container {
-    display: flex;
-    flex-direction: column;  /* Устанавливаем вертикальное расположение */
-    align-items: center;  /* Выравнивание по центру */
-    margin: 5px 0;  /* Отступ между кнопками */
-}
-.table-button {
-    justify-self: center;
-    width: 150px;
-    padding: 5px 10px;
-    margin: 5px;
-    display: inline-block;
-    text-align: center;
-}
-td form, td button {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-td > * {
-    margin: 5px 0;
-}
-
 table thead th {
     border-bottom: 2px solid #7c7c7c;
 }
-
-button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-}
-button:hover {
-    opacity: 0.8;
-}
-button:active {
-    transform: scale(0.95);
-}
-
-
-
-.addButton, .table-button {
-    font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    margin-bottom: 10px;
-}
-.addButton:hover {
-    background-color: #555;
-}
-.addButton:active {
-    transform: scale(0.95);
-    background-color: #222;
-}
-
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 28px;
-    cursor: pointer;
-     transition: transform 0.2s, color 0.2s;
-}
-.close:hover {
-    transform: scale(1.2);
-    color: red;
-}
-.close:active {
-    transform: scale(0.9);
-}
-
-.employee-modal, .employee-modal-edit, .exhibition-modal, .exhibition-modal-edit, .hall-modal-edit, .hall-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: flex-start;
-    animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-    position: relative;
-    background-color: #fff;
-    padding: 20px;
-    width: 400px;
-    margin-top: 100px;
-    border-radius: 8px;
-    animation: slideDown 0.3s ease;
-}
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
 @keyframes slideDown {
     from { transform: translateY(-20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
@@ -172,7 +131,57 @@ button:active {
     height: 96%;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 10px
 }
+.sidebar {
+    position: relative;
+    width: 250px;
+    background-color: #333;
+    padding: 20px;
+    color: #fff;
+    height: 100%;
+    overflow: auto;
+}
+.sidebar ul {
+    list-style-type: none;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline;
+}
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header h1 {
+    font-size: 24px;
+}
+
+
+.logout {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+
+}
+
 .logout-container {
     position: absolute;
     bottom: 20px;
@@ -194,60 +203,6 @@ button:active {
 .logout-container form button:hover {
     background-color: #595959;
 }
-
-.sidebar {
-    position: relative;
-    width: 250px;
-    background-color: #333;
-    padding: 20px;
-    color: #fff;
-    height: 100%; /* Установка высоты боковой панели на 100% */
-    overflow: auto; /* Добавление прокрутки, если содержимое превышает высоту */
-}
-.sidebar ul {
-    list-style-type: none;
-}
-
-.sidebar ul li {
-    margin-bottom: 15px;
-}
-
-.sidebar ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-.sidebar ul li a:hover {
-    text-decoration: underline;
-}
-
-.main-content {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-header h1 {
-    font-size: 24px;
-}
-
-.logout {
-    color: #333;
-    text-decoration: none;
-    font-size: 16px;
-
-}
-
-.out {
-
-}
 .logout:hover {
     text-decoration: underline;
 }
@@ -256,7 +211,7 @@ header h1 {
     margin-top: 20px;
 }
 
-
+/* Новые стили для форм */
 form {
     display: flex;
     flex-direction: column;
@@ -286,6 +241,20 @@ form textarea {
     resize: vertical;
 }
 
+form button {
+    padding: 10px 15px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+form button:hover {
+    background-color: #555;
+}
+
 .content-page {
     display: none;
     margin-top: 20px;
@@ -307,7 +276,7 @@ h2 {
     font-size: 22px;
     margin-bottom: 20px;
 }
-
+/* Дополнительные стили для адаптации */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
@@ -326,5 +295,7 @@ h2 {
 
     .main-content {
         padding: 10px;
+        flex: 1;
     }
+
 }

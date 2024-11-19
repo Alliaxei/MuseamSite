@@ -1,0 +1,21 @@
+{% for hall in halls %}
+                                <tr>
+                                    <td>{{ hall.number }}</td>
+                                    <td>{{ hall.get_thematic_display }}</td>
+                                    <td>
+                                            <div class="button-container">
+                                            <form id="hall-form-delete" action="{% url 'deleteHall' hall.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <button class="table-button" type="submit">Удалить</button>
+                                            </form>
+                                        </div>
+                                        <div class="button-container">
+                                            <button class="table-button" onclick="editHallModal({{ hall.id }})">Редактировать</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">Залы не найдены</td>
+                                </tr>
+                                {% endfor %}

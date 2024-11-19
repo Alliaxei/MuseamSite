@@ -1,0 +1,12 @@
+ {% for report in reports %}
+                                    <tr>
+                                        <td>{{ report.get_report_type_display }}</td>
+                                        <td>{{ report.description }}</td>
+                                        <td>{{ report.generated_at }}</td>
+                                        <td>{{ report.generated_by.name }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5">Отчёты не найдены</td>
+                                    </tr>
+                                {% endfor %}

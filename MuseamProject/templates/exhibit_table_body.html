@@ -1,0 +1,23 @@
+{% for exhibit in exhibits %}
+                                <tr>
+                                    <td>{{ exhibit.name }}</td>
+                                    <td>{{ exhibit.author }}</td>
+                                    <td>{{ exhibit.origin }}</td>
+                                    <td>{{ exhibit.quantity }}</td>
+                                    <td>{{ exhibit.get_category_display }}</td>
+                                    <td>{{ exhibit.history }}</td>
+                                    <td>{{ exhibit.get_condition_display }}</td>
+                                    <td>{{ exhibit.hall.number }}</td>
+                                    <td>
+                                        <form id="exhibit-form-delete" action="{% url 'deleteExhibit' exhibit.id %}" method="POST">
+                                        {% csrf_token %}
+                                            <button class="table-button" type="submit">Удалить</button>
+                                        </form>
+                                        <button class="table-button" onclick="editExhibitionModal({{ exhibit.id }})">Редактировать</button>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9">Экспонаты не найдены</td>
+                                </tr>
+                                {% endfor %}

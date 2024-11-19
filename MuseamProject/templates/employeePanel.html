@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+    {% load static %}
+    <link href="{% static 'css/employee.css' %}" rel="stylesheet">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#exhibits">Экспонаты</a></li>
+                <li><a href="#halls">Залы</a></li>
+                <li><a href="#reports">Отчёты</a></li>
+            </ul>
+            <div class="logout-container">
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Выйти</button>
+                </form>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="content">
+                <div class="welcome-text">
+                    <h1 id="welcome-message">Добро пожаловать в информационную систему музея</h1>
+                    <p id="welcome-text">Выберите раздел для просмотра информации.</p>
+                </div>
+
+                <!-- Экспонаты -->
+                <div id="exhibits" class="content-page" style="display: none;">
+                    <div class="content-container">
+                        <h2>Управление экспонатами</h2>
+                        <h3>Список экспонатов</h3>
+                        <table id="exhibit_table">
+                            <thead>
+                                <tr>
+                                    <th>Наименование</th>
+                                    <th>Автор</th>
+                                    <th>Источник происхождения</th>
+                                    <th>Количество экземпляров</th>
+                                    <th>Категория</th>
+                                    <th>История происхождения</th>
+                                    <th>Состояние</th>
+                                    <th>Зал</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exhibit_table_body">
+                                {% for exhibit in exhibits %}
+                                    <tr>
+                                        <td>{{ exhibit.name }}</td>
+                                        <td>{{ exhibit.author }}</td>
+                                        <td>{{ exhibit.origin }}</td>
+                                        <td>{{ exhibit.quantity }}</td>
+                                        <td>{{ exhibit.get_category_display }}</td>
+                                        <td>{{ exhibit.history }}</td>
+                                        <td>{{ exhibit.condition }}</td>
+                                        <td>{{ exhibit.hall.number }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="8">Экспонаты не найдены</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Залы -->
+                <div id="halls" class="content-page" style="display: none;">
+                    <div class="content-container">
+                        <h2>Управление залами</h2>
+                        <table id="hall_table">
+                            <thead>
+                                <tr>
+                                    <th>Номер зала</th>
+                                    <th>Тематика</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hall_table_body">
+                                {% for hall in halls %}
+                                    <tr>
+                                        <td>{{ hall.number }}</td>
+                                        <td>{{ hall.thematic }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Отчёты -->
+                <div id="reports" class="content-page" style="display: none;">
+                    <div class="content-container">
+                        <h2>Отчёты</h2>
+                            <button class="addButton" onclick="openReportModal()">Создать отчёт</button>
+
+                        <!-- Модальное окно для создания отчёта -->
+                        <div id="reportModal" class="report-modal" style="display: none;">
+                            <div class="modal-content">
+                             <span class="close" onclick="closeReportModal()">&times;</span>
+                                <form id="report-form" method="POST" action="{% url 'createReport' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="report_type">Тип отчёта</label>
+                                        <select id="report_type" name="report_type" onchange="toggleAdditionalFields()">
+                                            <option value="by_hall">Отчёт по содержимому выставочных залов</option>
+                                            <option value="by_theme">Отчёт по экспонатам по данной тематике</option>
+                                            <option value="count_by_theme">Отчёт о количестве экспонатов по данной тематике</option>
+                                            <option value="restoration">Отчёт по экспонатам, требующим реставрацию</option>
+                                        </select>
+                                    </div>
+                                    <div id="hall-field" class="form-group" style="display: none;">
+                                        <label for="hall_id">Номер зала</label>
+                                        <select name="hall_id" id="hall_id">
+                                            {% for hall in halls %}
+                                                <option value="{{ hall.id }}">{{ hall.number }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="theme-field" class="form-group" style="display: none;">
+                                        <label for="theme">Тематика</label>
+
+                                            <select name="thematic" id="thematic">
+                                                <option value="history">История</option>
+                                                <option value="art">Искусство</option>
+                                                <option value="science">Наука</option>
+                                                <option value="ethnography">Этнография</option>
+                                                <option value="archeology">Археология</option>
+                                                <option value="technology">Технологии</option>
+                                                <option value="natural_history">Природоведение</option>
+                                            </select>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Описание отчёта</label>
+                                        <textarea id="description" name="description" rows="4" required></textarea>
+                                    </div>
+
+                                    <button type="submit">Сгенерировать отчёт</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Таблица для отображения отчётов -->
+                        <table id="report_table">
+                            <thead>
+                                <tr>
+                                    <th>Тип отчёта</th>
+                                    <th>Описание</th>
+                                    <th>Дата создания</th>
+                                    <th>Создатель</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report_table_body">
+                                {% for report in reports %}
+                                    <tr>
+                                        <td>{{ report.get_report_type_display }}</td>
+                                        <td>{{ report.description }}</td>
+                                        <td>{{ report.generated_at }}</td>
+                                        <td>{{ report.generated_by.name }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4">Отчёты не найдены</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% load static %}
+    <script src="{% static 'js/employee.js' %}"></script>
+</body>
+</html>
