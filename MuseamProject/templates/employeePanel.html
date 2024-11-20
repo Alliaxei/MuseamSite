@@ -27,8 +27,8 @@
         <div class="main-content">
             <div class="content">
                 <div class="welcome-text">
-                    <h1 id="welcome-message">Добро пожаловать в информационную систему музея</h1>
-                    <p id="welcome-text">Выберите раздел для просмотра информации.</p>
+                    <h1 id="welcome-message">Добро пожаловать, {{ user.name }}!</h1>
+                    <p style="margin-top: 20px" id="welcome-text">Выберите раздел для просмотра информации.</p>
                 </div>
 
                 <!-- Экспонаты -->
@@ -86,7 +86,7 @@
                                 {% for hall in halls %}
                                     <tr>
                                         <td>{{ hall.number }}</td>
-                                        <td>{{ hall.thematic }}</td>
+                                        <td>{{ hall.get_thematic_display }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

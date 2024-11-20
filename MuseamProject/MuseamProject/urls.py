@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path
 
 from museamApp import views
@@ -8,7 +9,8 @@ from museamApp.views import admin_page, login_page, add_hall, exhibit_list, dele
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', login_page, name='loginPage'),
+    path('', lambda request: redirect('loginPage')),
+    path('loginPage/', login_page, name='loginPage'),
     path('adminPage/', admin_page, name='adminPage'),
     path('employeePage/', employee_page, name='employeePage'),
     #Не уверен насчет exhibition

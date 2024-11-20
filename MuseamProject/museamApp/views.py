@@ -1,5 +1,7 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
@@ -17,17 +19,26 @@ def login_page(request):
             login(request, user)
             if user.is_staff:
                 return redirect('adminPage')
-            else:
-                return redirect('employeePage')
+            return redirect('employeePage')
         else:
             error_message = "Неправильный логин или пароль"
 
     return render(request, 'login.html', {'error_message': error_message})
 def logout_page(request):
     if request.method == 'POST':
+        user = request.user
+        if user.is_authenticated:
+            user.is_active = False
+            user.save()
         logout(request)
         return redirect('loginPage')
+@login_required
 def admin_page(request):
+    if not request.user.is_staff:
+        print(f"Current user: {request.user}, is_authenticated: {request.user.is_authenticated}, is_staff: {request.user.is_staff}")
+        return HttpResponseForbidden("У вас нет разрешения для доступа к этой странице.")
+    print(f"Current user: {request.user}, is_authenticated: {request.user.is_authenticated}, is_staff: {request.user.is_staff}")
+
     employees = User.objects.filter(is_staff=False)
     exhibits = Exhibit.objects.all()
     halls = Hall.objects.all()
@@ -36,7 +47,9 @@ def admin_page(request):
                'halls': halls,
                'reports': Report.objects.all()}
     return render(request, 'resAdminPanel.html', context)
+@login_required
 def employee_page(request):
+    print(f"Current user: {request.user}, is_authenticated: {request.user.is_authenticated}, is_staff: {request.user.is_staff}")
     exhibits = Exhibit.objects.all()
     halls = Hall.objects.all()
     reports = Report.objects.all()
@@ -47,6 +60,8 @@ def employee_page(request):
 def exhibit_list(request):
     exhibits = Exhibit.objects.all()
     return render(request, "resAdminPanel.html", {'exhibits': exhibits})
+@login_required
+@staff_member_required
 def delete_exhibit(request, exhibit_id):
     if request.method == 'POST':
         try:
@@ -126,6 +141,7 @@ def add_exhibits(request):
         # Выполняется при открытии страницы
         exhibits = Exhibit.objects.all()
         return render(request, 'resAdminPanel.html',{'exhibits': exhibits, 'form': form})
+@login_required
 def add_hall(request):
     if request.method == 'POST':
         form = HallForm(request.POST)
@@ -137,6 +153,8 @@ def add_hall(request):
         else:
             print(form.errors)
             return JsonResponse({"errors": form.errors}, status=400)
+@login_required
+@staff_member_required
 def delete_hall(request, hall_id):
     if request.method == 'POST':
         try:
@@ -151,6 +169,8 @@ def delete_hall(request, hall_id):
         except TypeError as e:
             return JsonResponse({"error": f"Ошибка на сервере {e}"}, status=500)
     return JsonResponse({"error": "Некорректный запрос"}, status=400)
+@login_required
+@staff_member_required
 def edit_hall(request, hall_id):
     if request.method == 'POST':
         if not hall_id:
@@ -363,6 +383,8 @@ def create_report(request):
             return response
 
     return JsonResponse({"error": "Неверный метод запроса"}, status=405)
+@login_required
+@staff_member_required
 def delete_report(request, report_id):
     if request.method == "POST":
         try:
